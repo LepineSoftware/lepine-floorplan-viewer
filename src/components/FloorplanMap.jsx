@@ -1,30 +1,42 @@
+// src/components/FloorplanMap.jsx
 import { useEffect } from "react";
 import {
   MapContainer,
   ImageOverlay,
-  Marker,
+  Polygon, // Use Polygon for area-based interaction
   ZoomControl,
   useMap,
+  useMapEvents, // Used for coordinate debugging
 } from "react-leaflet";
 import L from "leaflet";
 import { MAP_CONFIG, floorplans } from "../data/floorplans";
 import "leaflet/dist/leaflet.css";
+
+// Helper component to log coordinates to the console for polygon creation
+function CoordinateDebugger() {
+  useMapEvents({
+    click(e) {
+      // In L.CRS.Simple, lat is Y and lng is X
+      const y = Math.round(e.latlng.lat);
+      const x = Math.round(e.latlng.lng);
+      console.log(`Coordinate captured: [${y}, ${x}]`);
+    },
+  });
+  return null;
+}
 
 // Controller to handle initial fit and resize events
 function MapController({ bounds }) {
   const map = useMap();
 
   useEffect(() => {
-    // Initial fit
     const initialFit = () => {
       map.invalidateSize();
       map.fitBounds(bounds, { padding: [20, 20] });
     };
 
-    // Timeout ensures Leaflet has a calculated container size on mount
     const timer = setTimeout(initialFit, 100);
 
-    // Resize listener to re-apply bounds as seen in index.html logic
     const handleResize = () => {
       map.invalidateSize();
       map.fitBounds(bounds, { padding: [20, 20] });
@@ -79,7 +91,7 @@ export default function FloorplanMap({ activeUnitId, onSelectUnit }) {
     <MapContainer
       crs={L.CRS.Simple}
       bounds={bounds}
-      minZoom={-5} // Allows zooming out to see the whole floorplan
+      minZoom={-5}
       zoomSnap={0}
       attributionControl={false}
       zoomControl={false}
@@ -89,18 +101,47 @@ export default function FloorplanMap({ activeUnitId, onSelectUnit }) {
       <ImageOverlay url={MAP_CONFIG.url} bounds={bounds} />
       <MapController bounds={bounds} />
 
-      {floorplans.map((unit) => (
-        <Marker
-          key={unit.id}
-          position={[unit.y, unit.x]}
-          eventHandlers={{ click: () => onSelectUnit(unit) }}
-          icon={L.divIcon({
-            className: `floorplan-base-pin ${activeUnitId === unit.id ? "pin-active" : ""}`,
-            iconSize: [30, 30],
-            iconAnchor: [15, 15],
-          })}
-        />
-      ))}
+      {/* Enable this to see click coordinates in the console */}
+      <CoordinateDebugger />
+
+      {floorplans.map((unit) => {
+        const isActive = activeUnitId === unit.id;
+
+        // Only render the polygon if coordinates are defined in data/floorplans.js
+        if (!unit.polygon) return null;
+
+        return (
+          <Polygon
+            key={unit.id}
+            positions={unit.polygon}
+            eventHandlers={{
+              click: () => onSelectUnit(unit),
+              mouseover: (e) => {
+                const layer = e.target;
+                layer.setStyle({
+                  fillOpacity: 0.6,
+                  weight: 2,
+                });
+              },
+              mouseout: (e) => {
+                const layer = e.target;
+                if (unit.id !== activeUnitId) {
+                  layer.setStyle({
+                    fillOpacity: 0.2,
+                    weight: 1,
+                  });
+                }
+              },
+            }}
+            pathOptions={{
+              fillColor: isActive ? "#3b82f6" : "#94a3b8",
+              fillOpacity: isActive ? 0.4 : 0.2,
+              color: isActive ? "#2563eb" : "#64748b",
+              weight: isActive ? 3 : 1,
+            }}
+          />
+        );
+      })}
     </MapContainer>
   );
 }
