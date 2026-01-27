@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @import "leaflet/dist/leaflet.css";
 @tailwind base;
 @tailwind components;
@@ -95,4 +94,16 @@
 .leaflet-bar a:hover {
   background-color: #102a43 !important;
   color: white !important;
+}
+
+/* src/index.css */
+#root {
+  height: 100vh;
+  width: 100vw;
+}
+
+.leaflet-container {
+  /* This ensures the background of the map matches your app's UI 
+     if the image aspect ratio doesn't perfectly fill the screen */
+  background: #f8fafc !important;
 }
