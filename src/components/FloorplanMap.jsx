@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   ImageOverlay,
@@ -20,13 +20,20 @@ function MapController({ bounds, imageWidth, imageHeight }) {
   useEffect(() => {
     if (!map || !bounds) return;
 
-    // Standard "Perfect Fit" Logic
     const fitImage = () => {
       map.invalidateSize();
       const container = map.getContainer();
+
+      // Calculate the zoom level required to fit the entire image in the container
       const zoomW = Math.log2(container.offsetWidth / imageWidth);
       const zoomH = Math.log2(container.offsetHeight / imageHeight);
       const perfectZoom = Math.min(zoomW, zoomH);
+
+      // Dynamically set minZoom to prevent zooming out further than the initial "fit"
+      map.setMinZoom(perfectZoom);
+
+      // Set the maxBounds to the asset size to restrict panning
+      map.setMaxBounds(bounds);
 
       map.setView([imageHeight / 2, imageWidth / 2], perfectZoom, {
         animate: true,
@@ -34,7 +41,7 @@ function MapController({ bounds, imageWidth, imageHeight }) {
       });
     };
 
-    // Geoman Debugging Logic
+    // Geoman Debugging Logic (preserved from original)
     if (MAP_VIEW_SETTINGS.debug) {
       map.pm.addControls({
         position: "topright",
@@ -51,31 +58,18 @@ function MapController({ bounds, imageWidth, imageHeight }) {
       const logPolygon = (e) => {
         const layer = e.layer || e.target;
         if (layer instanceof L.Polygon) {
-          // getLatLngs() returns nested arrays for polygons
           const latlngs = layer.getLatLngs()[0];
           const coords = latlngs.map(
             (ll) => `[${Math.round(ll.lat)}, ${Math.round(ll.lng)}]`,
           );
-
-          console.log("Updated Polygon Coordinates:");
-          console.log(`polygon: [\n  ${coords.join(",\n  ")}\n],`);
+          console.log("Updated Polygon Coordinates:", coords);
         }
       };
 
-      // Listen for creation and modifications
       map.on("pm:create", (e) => {
         logPolygon(e);
-        // Ensure new layers also log changes when edited or dragged
         e.layer.on("pm:edit", logPolygon);
         e.layer.on("pm:dragend", logPolygon);
-      });
-
-      // Hook into existing polygons rendered from your config
-      map.eachLayer((layer) => {
-        if (layer instanceof L.Polygon) {
-          layer.on("pm:edit", logPolygon);
-          layer.on("pm:dragend", logPolygon);
-        }
       });
     }
 
@@ -102,8 +96,12 @@ export default function FloorplanMap({
   return (
     <MapContainer
       crs={L.CRS.Simple}
+      // Start with a generic minZoom; MapController will override this dynamically
       minZoom={-5}
       maxZoom={2}
+      // Strict snapping to bounds
+      maxBounds={bounds}
+      maxBoundsViscosity={1.0}
       attributionControl={false}
       zoomControl={false}
       className="h-full w-full"
