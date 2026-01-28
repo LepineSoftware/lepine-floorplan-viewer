@@ -1,76 +1,4 @@
-const getUnsplashUrl = (id, width = 1200) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=90`;
-
-const GALLERY_SET_A = [
-  getUnsplashUrl("1502672260266-1c1ef2d93688"),
-  getUnsplashUrl("1484154218962-a197022b5858"),
-  getUnsplashUrl("1522770179533-24471fcdba45"),
-  getUnsplashUrl("1493809842364-78817add7ffb"),
-];
-
-const GALLERY_SET_B = [
-  getUnsplashUrl("1560448204-e02f11c3d0e2"),
-  getUnsplashUrl("1512918728675-ed5a9ecdebfd"),
-  getUnsplashUrl("1502005229762-cf1b2da7c5d6"),
-  getUnsplashUrl("1522708323590-d24dbb6b0267"),
-];
-
-const createUnits = (floorNum) => [
-  {
-    id: floorNum * 100 + 1,
-    title: `Unit ${floorNum}01`,
-    type: "Corner Suite",
-    available: true,
-    sqft: 1136,
-    beds: 3,
-    baths: 2,
-    polygon: [
-      [577, 181],
-      [844, 181],
-      [844, 405],
-      [577, 405],
-    ],
-    description: `Premium corner unit on the ${floorNum} floor.`,
-    img: getUnsplashUrl("1502672260266-1c1ef2d93688", 600),
-    gallery: GALLERY_SET_A,
-  },
-  {
-    id: floorNum * 100 + 2,
-    title: `Unit ${floorNum}02`,
-    type: "Standard Suite",
-    available: floorNum % 2 === 0,
-    sqft: 950,
-    beds: 2,
-    baths: 1,
-    polygon: [
-      [292, 652],
-      [546, 652],
-      [546, 883],
-      [292, 883],
-    ],
-    description: "Modern open-concept living space.",
-    img: getUnsplashUrl("1560448204-e02f11c3d0e2", 600),
-    gallery: GALLERY_SET_B,
-  },
-  {
-    id: floorNum * 100 + 6,
-    title: `Unit ${floorNum}06`,
-    type: "Studio",
-    available: true,
-    sqft: 650,
-    beds: 1,
-    baths: 1,
-    polygon: [
-      [598, 1526],
-      [846, 1526],
-      [846, 1832],
-      [598, 1832],
-    ],
-    description: "Efficient layout with high-end finishes.",
-    img: getUnsplashUrl("1493809842364-78817add7ffb", 600),
-    gallery: GALLERY_SET_A,
-  },
-];
+// src/config/floorplans.js
 
 export const BUILDING_CONFIG = {
   width: 3840,
@@ -101,7 +29,72 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1804/216/index.html",
         },
       ],
-      units: createUnits(1),
+      units: [
+        {
+          id: 101,
+          title: "Unit 101",
+          type: "Corner Suite",
+          available: true,
+          sqft: 1136,
+          beds: 3,
+          baths: 2,
+          polygon: [
+            [577, 181],
+            [844, 181],
+            [844, 405],
+            [577, 405],
+          ],
+          description: "Premium corner unit on the 1st floor.",
+          img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+            "https://images.unsplash.com/photo-1484154218962-a197022b5858",
+            "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
+          ],
+        },
+        {
+          id: 102,
+          title: "Unit 102",
+          type: "Standard Suite",
+          available: false,
+          sqft: 950,
+          beds: 2,
+          baths: 1,
+          polygon: [
+            [292, 652],
+            [546, 652],
+            [546, 883],
+            [292, 883],
+          ],
+          description: "Modern open-concept living space.",
+          img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
+            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+          ],
+        },
+        {
+          id: 106,
+          title: "Unit 106",
+          type: "Studio",
+          available: true,
+          sqft: 650,
+          beds: 1,
+          baths: 1,
+          polygon: [
+            [598, 1526],
+            [846, 1526],
+            [846, 1832],
+            [598, 1832],
+          ],
+          description: "Efficient layout with high-end finishes.",
+          img: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+            "https://images.unsplash.com/photo-1493809842364-78817add7ffb",
+          ],
+        },
+      ],
     },
     {
       id: "floor-2",
@@ -127,7 +120,50 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1804/222/index.html",
         },
       ],
-      units: createUnits(2),
+      units: [
+        {
+          id: 201,
+          title: "Unit 201",
+          type: "Corner Suite",
+          available: true,
+          sqft: 1136,
+          beds: 3,
+          baths: 2,
+          polygon: [
+            [577, 181],
+            [844, 181],
+            [844, 405],
+            [577, 405],
+          ],
+          description: "Premium corner unit on the 2nd floor.",
+          img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+            "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6",
+          ],
+        },
+        {
+          id: 202,
+          title: "Unit 202",
+          type: "Standard Suite",
+          available: true,
+          sqft: 950,
+          beds: 2,
+          baths: 1,
+          polygon: [
+            [292, 652],
+            [546, 652],
+            [546, 883],
+            [292, 883],
+          ],
+          description: "Modern open-concept living space.",
+          img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
+            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+          ],
+        },
+      ],
     },
     {
       id: "floor-3",
@@ -153,7 +189,29 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1814/1_bdrm_suite/index.html",
         },
       ],
-      units: createUnits(3),
+      units: [
+        {
+          id: 301,
+          title: "Unit 301",
+          type: "Corner Suite",
+          available: true,
+          sqft: 1136,
+          beds: 3,
+          baths: 2,
+          polygon: [
+            [577, 181],
+            [844, 181],
+            [844, 405],
+            [577, 405],
+          ],
+          description: "Premium corner unit on the 3rd floor.",
+          img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+            "https://images.unsplash.com/photo-1484154218962-a197022b5858",
+          ],
+        },
+      ],
     },
     {
       id: "floor-4",
@@ -173,7 +231,29 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1804/210/index.html",
         },
       ],
-      units: createUnits(4),
+      units: [
+        {
+          id: 402,
+          title: "Unit 402",
+          type: "Standard Suite",
+          available: true,
+          sqft: 950,
+          beds: 2,
+          baths: 1,
+          polygon: [
+            [292, 652],
+            [546, 652],
+            [546, 883],
+            [292, 883],
+          ],
+          description: "Modern open-concept living space.",
+          img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
+            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+          ],
+        },
+      ],
     },
     {
       id: "floor-5",
@@ -196,7 +276,29 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1804/219/index.html",
         },
       ],
-      units: createUnits(5),
+      units: [
+        {
+          id: 506,
+          title: "Unit 506",
+          type: "Studio",
+          available: false,
+          sqft: 650,
+          beds: 1,
+          baths: 1,
+          polygon: [
+            [598, 1526],
+            [846, 1526],
+            [846, 1832],
+            [598, 1832],
+          ],
+          description: "Efficient layout with high-end finishes.",
+          img: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+            "https://images.unsplash.com/photo-1493809842364-78817add7ffb",
+          ],
+        },
+      ],
     },
     {
       id: "floor-6",
@@ -220,7 +322,29 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1804/222/index.html",
         },
       ],
-      units: createUnits(6),
+      units: [
+        {
+          id: 601,
+          title: "Unit 601",
+          type: "Corner Suite",
+          available: true,
+          sqft: 1136,
+          beds: 3,
+          baths: 2,
+          polygon: [
+            [577, 181],
+            [844, 181],
+            [844, 405],
+            [577, 405],
+          ],
+          description: "Premium corner unit on the 6th floor.",
+          img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+            "https://images.unsplash.com/photo-1484154218962-a197022b5858",
+          ],
+        },
+      ],
     },
     {
       id: "floor-7",
@@ -247,7 +371,29 @@ export const BUILDING_CONFIG = {
           url: "https://www.solutioneers.dev/tours/1814/1_bdrm_suite/index.html",
         },
       ],
-      units: createUnits(7),
+      units: [
+        {
+          id: 702,
+          title: "Unit 702",
+          type: "Standard Suite",
+          available: false,
+          sqft: 950,
+          beds: 2,
+          baths: 1,
+          polygon: [
+            [292, 652],
+            [546, 652],
+            [546, 883],
+            [292, 883],
+          ],
+          description: "Modern open-concept living space with top-floor views.",
+          img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=90",
+          gallery: [
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
+            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+          ],
+        },
+      ],
     },
   ],
 };

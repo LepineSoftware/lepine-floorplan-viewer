@@ -6,8 +6,8 @@ const tourIcon = L.divIcon({
   html: `
     <div style="
       background-color: #102a43;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -22,8 +22,8 @@ const tourIcon = L.divIcon({
     </div>
   `,
   className: "virtual-tour-marker",
-  iconSize: [38, 38],
-  iconAnchor: [19, 19],
+  iconSize: [40, 40],
+  iconAnchor: [20, 20],
 });
 
 export default function VirtualTourPolygon({ tour, onSelect }) {

@@ -1,65 +1,44 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { MapContainer, ImageOverlay, useMap } from "react-leaflet";
 import L from "leaflet";
+import MapController from "./MapController";
 import FloorPolygon from "./FloorPolygon";
 import UnitPolygon from "./UnitPolygon";
 import VirtualTourPolygon from "./VirtualTourPolygon";
 import { MAP_VIEW_SETTINGS } from "../config/viewConfigs";
 import "leaflet/dist/leaflet.css";
 
-function MapController({ items, bounds, imageWidth, imageHeight }) {
+// Helper for the Recenter button in Floorplan mode
+function RecenterControl({ bounds, padding }) {
   const map = useMap();
-
-  useEffect(() => {
-    if (!map) return;
-
-    const handleSizing = () => {
-      map.invalidateSize();
-      const container = map.getContainer();
-
-      // 1. Calculate zooms for both dimensions
-      const zoomW = Math.log2(container.offsetWidth / imageWidth);
-      const zoomH = Math.log2(container.offsetHeight / imageHeight);
-
-      /** * MIMIC object-fit: cover
-       * Using Math.max ensures the image fills the container entirely.
-       * One dimension will fit perfectly, while the other overflows (cropped).
-       */
-      const coverZoom = Math.max(zoomW, zoomH);
-
-      // 2. Calculate polygon-specific zoom if items exist
-      let targetZoom = coverZoom;
-      let targetCenter = [imageHeight / 2, imageWidth / 2];
-
-      const allPoints = items?.flatMap((item) => item.polygon) || [];
-
-      if (allPoints.length > 0) {
-        const polygonBounds = L.latLngBounds(allPoints);
-        const paddedBounds = polygonBounds.pad(0.15);
-
-        // We take the higher of the cover zoom or the polygon fit zoom
-        // to ensure we stay "zoomed in"
-        const polyZoom = map.getBoundsZoom(paddedBounds);
-        targetZoom = Math.max(coverZoom, polyZoom);
-        targetCenter = polygonBounds.getCenter();
-      }
-
-      // 3. Apply constraints
-      map.setMinZoom(coverZoom); // Prevents zooming out to see white space
-      map.setMaxZoom(targetZoom + 1);
-
-      map.setView(targetCenter, targetZoom, {
-        animate: true,
-        duration: MAP_VIEW_SETTINGS.animationDuration,
-      });
-    };
-
-    handleSizing();
-    window.addEventListener("resize", handleSizing);
-    return () => window.removeEventListener("resize", handleSizing);
-  }, [map, items, bounds, imageWidth, imageHeight]);
-
-  return null;
+  return (
+    <div
+      className="leaflet-top leaflet-right"
+      style={{ marginTop: "10px", marginRight: "10px" }}
+    >
+      <button
+        onClick={() => map.fitBounds(bounds, { padding })}
+        className="bg-white p-2 rounded shadow-md hover:bg-gray-100 flex items-center gap-2 text-sm font-bold border border-gray-200"
+        style={{ pointerEvents: "auto" }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        Recenter View
+      </button>
+    </div>
+  );
 }
 
 export default function FloorplanMap({
@@ -75,53 +54,61 @@ export default function FloorplanMap({
     [0, 0],
     [config.height, config.width],
   ];
+  const viewSettings = MAP_VIEW_SETTINGS[mode];
 
   return (
-    <MapContainer
-      crs={L.CRS.Simple}
-      zoomControl={true}
-      scrollWheelZoom={true} // Re-enabled so user can adjust the "cover" view
-      doubleClickZoom={false}
-      touchZoom={true}
-      maxZoom={-2}
-      dragging={true}
-      attributionControl={false}
-      className="h-full w-full"
-      style={{ background: MAP_VIEW_SETTINGS.defaultBackground }}
-    >
-      <ImageOverlay url={config.url} bounds={bounds} />
+    <div className="h-full w-full relative overflow-hidden">
+      <MapContainer
+        key={mode} // Forces fresh initialization when switching modes
+        crs={L.CRS.Simple}
+        className="h-full w-full"
+        style={{ background: MAP_VIEW_SETTINGS.defaultBackground }}
+        attributionControl={false}
+        // Interaction settings pulled from config
+        zoomControl={viewSettings.zoomControl}
+        dragging={viewSettings.dragging}
+        scrollWheelZoom={viewSettings.scrollWheelZoom}
+        doubleClickZoom={viewSettings.doubleClickZoom}
+        touchZoom={viewSettings.touchZoom}
+      >
+        <ImageOverlay url={config.url} bounds={bounds} />
 
-      <MapController
-        items={items}
-        bounds={bounds}
-        imageWidth={config.width}
-        imageHeight={config.height}
-      />
+        <MapController
+          mode={mode}
+          bounds={bounds}
+          imageWidth={config.width}
+          imageHeight={config.height}
+        />
 
-      {mode === "building" &&
-        items.map((floor) => (
-          <FloorPolygon key={floor.id} floor={floor} onSelect={onSelect} />
-        ))}
+        {mode === "floorplan" && (
+          <RecenterControl bounds={bounds} padding={viewSettings.padding} />
+        )}
 
-      {mode === "floorplan" && (
-        <>
-          {items.map((unit) => (
-            <UnitPolygon
-              key={unit.id}
-              unit={unit}
-              isActive={activeId === unit.id}
-              onSelect={onSelect}
-            />
+        {mode === "building" &&
+          items.map((floor) => (
+            <FloorPolygon key={floor.id} floor={floor} onSelect={onSelect} />
           ))}
-          {vrTours.map((tour) => (
-            <VirtualTourPolygon
-              key={tour.id}
-              tour={tour}
-              onSelect={onTourSelect}
-            />
-          ))}
-        </>
-      )}
-    </MapContainer>
+
+        {mode === "floorplan" && (
+          <>
+            {items.map((unit) => (
+              <UnitPolygon
+                key={unit.id}
+                unit={unit}
+                isActive={activeId === unit.id}
+                onSelect={onSelect}
+              />
+            ))}
+            {vrTours.map((tour) => (
+              <VirtualTourPolygon
+                key={tour.id}
+                tour={tour}
+                onSelect={onTourSelect}
+              />
+            ))}
+          </>
+        )}
+      </MapContainer>
+    </div>
   );
 }

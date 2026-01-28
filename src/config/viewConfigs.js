@@ -1,13 +1,36 @@
 // src/config/viewConfig.js
-
 import { BACKGROUND_FILL } from "./mapStyles";
 
 export const MAP_VIEW_SETTINGS = {
-  debug: true, // Toggle this to enable/disable editing tools
-  fitBoundsPadding: [0, 0],
+  debug: true,
   animationDuration: 0.5,
-  maxBoundsViscosity: 1.0,
   defaultBackground: BACKGROUND_FILL,
+
+  // Building View: Static "Cover" background
+  building: {
+    fitType: "cover",
+    zoomControl: false,
+    dragging: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    touchZoom: false,
+    minZoomOffset: 0,
+    maxZoomOffset: 0,
+    padding: [0, 0],
+  },
+
+  // Floorplan View: Interactive "Contain" SVG
+  floorplan: {
+    fitType: "contain",
+    zoomControl: true,
+    dragging: true,
+    scrollWheelZoom: true,
+    doubleClickZoom: true,
+    touchZoom: true,
+    minZoomOffset: -1, // Locks zoom-out to show full SVG
+    maxZoomOffset: 1, // Allows deep zooming into units
+    padding: [50, 50],
+  },
 };
 
 export const UI_TRANSITIONS = "transition-all duration-200";
