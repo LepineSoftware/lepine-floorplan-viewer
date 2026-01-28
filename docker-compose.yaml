@@ -1,0 +1,19 @@
+name: 'lepine-floorplan-explorer'
+services:
+  floorplan-viewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vite-react-app
+    restart: always
+    ports:
+      - "1050:80"
+    # Security: Set the root filesystem to read-only
+    read_only: true
+    # Provide writable memory space for Nginx system files
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    security_opt:
+      - no-new-privileges:true
