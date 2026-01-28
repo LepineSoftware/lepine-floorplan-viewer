@@ -36,7 +36,7 @@ export default function MapController({
 
         // Center the view and lock zoom levels to keep it static
         map.setView([imageHeight / 2, imageWidth / 2], coverZoom, {
-          animate: false,
+          animate: true,
         });
         map.setMinZoom(coverZoom + config.minZoomOffset);
         map.setMaxZoom(coverZoom + config.maxZoomOffset);

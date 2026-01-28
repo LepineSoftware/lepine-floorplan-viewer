@@ -21,9 +21,9 @@ export const POLYGON_STYLES = {
     weight: 1,
   },
   virtualTour: {
-    fillColor: "#102a43", // Midnight Blue
-    fillOpacity: 0.9,
-    color: "#ffffff",
-    weight: 1,
+    fillColor: PRIMARY_FILL,
+    fillOpacity: 0.6,
+    color: SECONDARY_FILL,
+    weight: 0,
   },
 };

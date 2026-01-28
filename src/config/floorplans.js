@@ -277,10 +277,10 @@ export const BUILDING_CONFIG = {
             [598, 1832],
           ],
           description: "Efficient layout with high-end finishes.",
-          img: "https://images.unsplash.com/photo-1494109842364-78817add7ffb?auto=format&fit=crop&w=600&q=90",
+          img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=90",
           gallery: [
             "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
-            "https://images.unsplash.com/photo-1494109842364-78817add7ffb",
+            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
           ],
         },
       ],

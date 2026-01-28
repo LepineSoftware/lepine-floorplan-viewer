@@ -23,13 +23,13 @@ export const MAP_VIEW_SETTINGS = {
   floorplan: {
     fitType: "contain",
     zoomControl: true,
-    dragging: true,
-    scrollWheelZoom: true,
+    dragging: false,
+    scrollWheelZoom: false,
     doubleClickZoom: true,
     touchZoom: true,
     minZoomOffset: -1, // Locks zoom-out to show full SVG
     maxZoomOffset: 1, // Allows deep zooming into units
-    padding: [50, 50],
+    padding: [0, 0],
   },
 };
 
