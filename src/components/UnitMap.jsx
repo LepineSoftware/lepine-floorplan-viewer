@@ -1,3 +1,4 @@
+// src/components/UnitMap.jsx
 import React from "react";
 import { MapContainer, ImageOverlay, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -11,8 +12,8 @@ function RecenterControl({ bounds, padding }) {
   const map = useMap();
   return (
     <div
-      className="leaflet-bottom leaflet-right"
-      style={{ marginBottom: "20px", marginRight: "10px", zIndex: 1000 }}
+      className="leaflet-top leaflet-right"
+      style={{ marginTop: "20px", marginRight: "10px", zIndex: 1000 }}
     >
       <button
         onClick={() => map.fitBounds(bounds, { padding })}

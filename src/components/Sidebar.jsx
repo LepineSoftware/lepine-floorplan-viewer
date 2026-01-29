@@ -2,15 +2,10 @@
 import React from "react";
 import {
   Download,
-  ChevronLeft,
-  ChevronRight,
   Image as ImageIcon,
-  MapPin,
   Maximize,
   Bed,
   Bath,
-  Banknote,
-  Home,
   DoorOpen,
   Waves,
   Utensils,
@@ -24,14 +19,7 @@ import {
 } from "lucide-react";
 import { useBuilding } from "../context/BuildingContext";
 
-export default function Sidebar({
-  unit,
-  onNext,
-  onPrev,
-  currentIndex,
-  total,
-  onOpenGallery,
-}) {
+export default function Sidebar({ unit, onOpenGallery }) {
   const { data } = useBuilding();
 
   // Color mapping for the status enumeration
@@ -45,7 +33,7 @@ export default function Sidebar({
     statusStyles[unit?.status] || statusStyles["Available"];
   const hasGallery = unit?.gallery && unit.gallery.length > 0;
 
-  // Icon mapping for boolean and special attributes
+  // Icon mapping for boolean and special attributes (Price removed)
   const attributeIcons = {
     sqft: { label: "sqft", icon: Maximize },
     numOfBeds: { label: "Beds", icon: Bed },
@@ -64,15 +52,6 @@ export default function Sidebar({
 
   return (
     <div className="flex-1 w-full flex flex-col bg-white shadow-xl z-20 md:w-[420px] md:flex-none md:h-full md:border-l border-slate-100 min-h-0 relative">
-      <div className="hidden md:block px-8 py-6 border-b border-slate-100">
-        <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-          {data?.name}
-        </h2>
-        <p className="text-[10px] text-slate-400 font-bold uppercase mt-1 flex items-center gap-1">
-          <MapPin size={10} /> {data?.address}
-        </p>
-      </div>
-
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {!unit ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-400 py-12">
@@ -108,7 +87,7 @@ export default function Sidebar({
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 {hasGallery && (
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 transition-all duration-300">
                     <ImageIcon size={14} />
                     <span className="text-[10px] font-bold uppercase tracking-wider">
                       View Gallery
@@ -135,7 +114,6 @@ export default function Sidebar({
                         </div>
                         <div>
                           <p className="text-xs font-bold text-slate-900 leading-none">
-                            {Config.prefix}
                             {spec.val}
                           </p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">
@@ -153,7 +131,7 @@ export default function Sidebar({
                 <div className="grid grid-cols-2 gap-y-4">
                   {Object.entries(attributeIcons)
                     .filter(
-                      ([key, config]) =>
+                      ([key]) =>
                         typeof unit[key] === "boolean" && unit[key] === true,
                     )
                     .map(([key, config]) => (
@@ -189,25 +167,6 @@ export default function Sidebar({
               >
                 <Download size={18} /> Download Floorplan
               </a>
-            </div>
-
-            {/* Footer Navigation */}
-            <div className="flex items-center justify-between px-8 py-6 border-t border-slate-50 bg-white sticky bottom-0">
-              <button
-                onClick={onPrev}
-                className="text-sm font-semibold text-slate-400 hover:text-[#102a43] transition-colors flex items-center gap-1"
-              >
-                <ChevronLeft size={16} /> Prev
-              </button>
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">
-                {currentIndex + 1} / {total}
-              </span>
-              <button
-                onClick={onNext}
-                className="text-sm font-semibold text-slate-400 hover:text-[#102a43] transition-colors flex items-center gap-1"
-              >
-                Next <ChevronRight size={16} />
-              </button>
             </div>
           </div>
         )}

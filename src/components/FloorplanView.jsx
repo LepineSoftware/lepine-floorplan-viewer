@@ -1,5 +1,5 @@
 // src/components/FloorplanView.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronUp } from "lucide-react";
 import { useBuilding } from "../context/BuildingContext";
 import UnitMap from "./UnitMap";
@@ -10,7 +10,6 @@ import { UI_TRANSITIONS } from "../config/viewConfigs";
 
 export default function FloorplanView() {
   const {
-    data,
     activeFloor,
     activeUnit,
     selectFloor,
@@ -36,6 +35,23 @@ export default function FloorplanView() {
     if (nextIndex < 0) nextIndex = units.length - 1;
     selectUnit(units[nextIndex].id);
   };
+
+  // Keyboard navigation for units
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't navigate if modal or tour is open to avoid conflict
+      if (isGalleryOpen || activeTour) return;
+
+      if (e.key === "ArrowRight") {
+        navigateUnit(1);
+      } else if (e.key === "ArrowLeft") {
+        navigateUnit(-1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentIndex, isGalleryOpen, activeTour]);
 
   return (
     <div className="flex flex-col md:flex-row h-full w-full">
@@ -88,14 +104,7 @@ export default function FloorplanView() {
         />
       </div>
 
-      <Sidebar
-        unit={activeUnit}
-        onNext={() => navigateUnit(1)}
-        onPrev={() => navigateUnit(-1)}
-        currentIndex={currentIndex}
-        total={activeFloor.units.length}
-        onOpenGallery={() => setIsGalleryOpen(true)}
-      />
+      <Sidebar unit={activeUnit} onOpenGallery={() => setIsGalleryOpen(true)} />
 
       <VirtualTourEmbed
         isOpen={!!activeTour}
