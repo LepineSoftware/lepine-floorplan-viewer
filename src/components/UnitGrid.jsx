@@ -3,24 +3,25 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import { useBuilding } from "../context/BuildingContext";
-import { Heart, Maximize, Bed, Bath, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-export default function UnitGrid() {
-  const { filteredUnits, selectUnit, activeUnit, favorites, toggleFavorite } =
+export default function UnitGrid({ onSelectUnit }) {
+  const { filteredUnits, activeUnit, favorites, toggleFavorite } =
     useBuilding();
 
   const UnitCard = ({ unit }) => {
+    if (!unit) return null;
     const isFav = favorites.includes(unit.id);
     const isActive = activeUnit?.id === unit.id;
 
     return (
       <div
-        onClick={() => selectUnit(unit.id)}
+        onClick={() => onSelectUnit(unit.id)}
         className={`group bg-white rounded-3xl overflow-hidden border-2 transition-all cursor-pointer h-full flex flex-col ${
           isActive
             ? "border-[#102a43] shadow-xl"
@@ -103,7 +104,18 @@ export default function UnitGrid() {
 
   return (
     <div className="w-full">
-      {/* Mobile/Small Slider View: Triggers on mobile or when few items exist */}
+      <style>
+        {`
+          .swiper-pagination-bullet-active {
+            background: #102a43 !important;
+          }
+          .swiper-pagination-bullet {
+            opacity: 0.5;
+          }
+        `}
+      </style>
+
+      {/* Mobile/Small Slider View */}
       <div className="block lg:hidden">
         <Swiper
           modules={[Pagination, Navigation]}

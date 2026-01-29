@@ -1,5 +1,5 @@
 // src/components/FloorplanView.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronUp,
   Map as MapIcon,
@@ -37,27 +37,15 @@ export default function FloorplanView() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  // Track if a unit has been manually selected by the user
-  const hasManuallySelected = useRef(false);
-
-  // Reset the manual selection flag when the floor changes
+  // Close the sidebar automatically when changing floors
   useEffect(() => {
-    hasManuallySelected.current = false;
     setIsMobileSidebarOpen(false);
   }, [activeFloor?.id]);
 
-  // Sync mobile sidebar state with unit selection changes
-  useEffect(() => {
-    // Only open the sidebar if a user has actually clicked a unit
-    if (hasManuallySelected.current && activeUnit && window.innerWidth < 768) {
-      setIsMobileSidebarOpen(true);
-    }
-  }, [activeUnit]);
-
   if (!activeFloor) return null;
 
+  // Single-click handler for both Map and List views
   const handleUnitSelect = (unitId) => {
-    hasManuallySelected.current = true;
     selectUnit(unitId);
     if (window.innerWidth < 768) {
       setIsMobileSidebarOpen(true);
@@ -130,16 +118,12 @@ export default function FloorplanView() {
               />
             ) : (
               <div className="p-4 md:p-8">
-                {/* Note: UnitGrid internal logic calls selectUnit from context.
-                  You may need to pass handleUnitSelect to it if clicking 
-                  list items still triggers the auto-popup incorrectly.
-                */}
                 <UnitGrid onSelectUnit={handleUnitSelect} />
               </div>
             )}
           </div>
 
-          {/* Floating Info Button for Mobile Map */}
+          {/* Floating Info Button for Mobile Map (Manual Trigger) */}
           {viewMode === "map" && activeUnit && (
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
