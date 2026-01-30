@@ -26,7 +26,7 @@ export function BuildingProvider({ children }) {
     status: "All",
     features: [],
     minSqft: 0,
-    maxSqft: 0, // Start at 0 to trigger automatic initialization
+    maxSqft: 0,
   });
 
   useEffect(() => {
@@ -57,7 +57,6 @@ export function BuildingProvider({ children }) {
     );
   }, [floors]);
 
-  // Sync filter bounds with data limits once units are loaded
   useEffect(() => {
     if (allUnits.length > 0 && filters.maxSqft === 0) {
       const sqfts = allUnits.map((u) => u.sqft || 0);
@@ -142,6 +141,7 @@ export function BuildingProvider({ children }) {
       setFavorites((prev) =>
         prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
       ),
+    clearFavorites: () => setFavorites([]),
     goBackToBuilding: () => {
       setActiveFloorId(null);
       setActiveUnitId(null);

@@ -1,29 +1,24 @@
 // src/components/UnitGrid.jsx
-import React from "react";
+import React, { memo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import { useBuilding } from "../context/BuildingContext";
 import { Heart, ArrowRight, Maximize, Bed, Bath } from "lucide-react";
 
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-export default function UnitGrid({ onSelectUnit }) {
-  const { filteredUnits, activeUnit, favorites, toggleFavorite } =
-    useBuilding();
+const attributeIcons = {
+  sqft: { label: "sqft", icon: Maximize },
+  numOfBeds: { label: "Beds", icon: Bed },
+  numOfBaths: { label: "Baths", icon: Bath },
+};
 
-  const attributeIcons = {
-    sqft: { label: "sqft", icon: Maximize },
-    numOfBeds: { label: "Beds", icon: Bed },
-    numOfBaths: { label: "Baths", icon: Bath },
-  };
-
-  const UnitCard = ({ unit }) => {
+// Moved UnitCard outside and wrapped in memo to prevent remounting/jumping
+const UnitCard = memo(
+  ({ unit, isActive, isFav, toggleFavorite, onSelectUnit }) => {
     if (!unit) return null;
-    const isFav = favorites.includes(unit.id);
-    const isActive = activeUnit?.id === unit.id;
 
     return (
       <div
@@ -34,7 +29,6 @@ export default function UnitGrid({ onSelectUnit }) {
             : "border-transparent hover:border-slate-200"
         }`}
       >
-        {/* Responsive Aspect Ratio with a 300px height ceiling */}
         <div className="relative overflow-hidden max-h-[12rem]">
           <img
             src={unit.image}
@@ -43,6 +37,7 @@ export default function UnitGrid({ onSelectUnit }) {
           />
           <button
             onClick={(e) => {
+              e.preventDefault(); // Essential to stop jumping
               e.stopPropagation();
               toggleFavorite(unit.id);
             }}
@@ -66,7 +61,6 @@ export default function UnitGrid({ onSelectUnit }) {
             </p>
           </div>
 
-          {/* Attributes layout mirrored from Sidebar */}
           <div className="flex flex-wrap justify-between gap-2 mb-6 sm:mb-8">
             {["sqft", "numOfBeds", "numOfBaths"].map((key) => {
               const Config = attributeIcons[key];
@@ -94,7 +88,12 @@ export default function UnitGrid({ onSelectUnit }) {
         </div>
       </div>
     );
-  };
+  },
+);
+
+export default function UnitGrid({ onSelectUnit }) {
+  const { filteredUnits, activeUnit, favorites, toggleFavorite } =
+    useBuilding();
 
   if (filteredUnits.length === 0) {
     return (
@@ -124,7 +123,6 @@ export default function UnitGrid({ onSelectUnit }) {
         `}
       </style>
 
-      {/* Swiper Layout: Active below 1024px (lg) */}
       <div className="block lg:hidden">
         <Swiper
           modules={[Pagination, Navigation]}
@@ -141,16 +139,28 @@ export default function UnitGrid({ onSelectUnit }) {
         >
           {filteredUnits.map((unit) => (
             <SwiperSlide key={unit.id} className="h-auto">
-              <UnitCard unit={unit} />
+              <UnitCard
+                unit={unit}
+                isActive={activeUnit?.id === unit.id}
+                isFav={favorites.includes(unit.id)}
+                toggleFavorite={toggleFavorite}
+                onSelectUnit={onSelectUnit}
+              />
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
 
-      {/* Grid Layout: Active at and above 1024px (lg) */}
       <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
         {filteredUnits.map((unit) => (
-          <UnitCard key={unit.id} unit={unit} />
+          <UnitCard
+            key={unit.id}
+            unit={unit}
+            isActive={activeUnit?.id === unit.id}
+            isFav={favorites.includes(unit.id)}
+            toggleFavorite={toggleFavorite}
+            onSelectUnit={onSelectUnit}
+          />
         ))}
       </div>
     </div>

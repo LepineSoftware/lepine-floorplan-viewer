@@ -1,13 +1,19 @@
 // src/components/UnitFilters.jsx
 import React, { useState } from "react";
 import { useBuilding } from "../context/BuildingContext";
-import { Filter, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
+import {
+  Filter,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
+  Trash2,
+} from "lucide-react";
 
 export default function UnitFilters() {
-  const { filters, setFilters, allUnits } = useBuilding();
+  const { filters, setFilters, allUnits, gridTab, clearFavorites } =
+    useBuilding();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Compute local limits for the slider constraints based on building data
   const unitSqfts = allUnits.map((u) => u.sqft || 0);
   const minSqftLimit = unitSqfts.length > 0 ? Math.min(...unitSqfts) : 0;
   const maxSqftLimit = unitSqfts.length > 0 ? Math.max(...unitSqfts) : 5000;
@@ -47,13 +53,26 @@ export default function UnitFilters() {
 
   return (
     <div className="bg-white border-b border-slate-200 shrink-0 relative z-[1001]">
-      {/* Toggle Header - Visible on all screen sizes, collapsed by default */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-2 text-[#102a43]">
           <Filter size={18} />
           <span className="text-sm font-bold">Filters</span>
+          {gridTab === "favorites" && (
+            <span className="ml-2 px-2 py-0.5 bg-rose-50 text-rose-600 text-[10px] font-bold rounded-full uppercase tracking-tighter">
+              Favorites
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
+          {gridTab === "favorites" && (
+            <button
+              onClick={clearFavorites}
+              className="flex items-center gap-2 px-3 py-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all text-xs font-bold mr-2"
+            >
+              <Trash2 size={16} />
+              <span className="hidden sm:inline">Clear All</span>
+            </button>
+          )}
           <button
             onClick={resetFilters}
             className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
@@ -69,7 +88,6 @@ export default function UnitFilters() {
         </div>
       </div>
 
-      {/* Overlay Filter Panel - Absolute positioning to overlap content without pushing it down */}
       <div
         className={`${
           isExpanded
@@ -148,7 +166,6 @@ export default function UnitFilters() {
             </button>
           </div>
 
-          {/* Amenities & Features */}
           <div className="space-y-3 pt-6 border-t border-slate-100">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">
               Amenities & Features
