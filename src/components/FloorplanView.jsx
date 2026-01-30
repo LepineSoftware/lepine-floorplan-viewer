@@ -1,5 +1,4 @@
-// src/components/FloorplanView.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ChevronUp,
   Map as MapIcon,
@@ -32,30 +31,26 @@ export default function FloorplanView() {
     activeTour,
     setActiveTour,
   } = useBuilding();
-
   const [isFloorMenuOpen, setIsFloorMenuOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  // Close the sidebar automatically when changing floors
   useEffect(() => {
     setIsMobileSidebarOpen(false);
   }, [activeFloor?.id]);
-
   if (!activeFloor) return null;
 
-  // Single-click handler: trigger bottom sheet for anything below 1024px
-  const handleUnitSelect = (unitId) => {
-    selectUnit(unitId);
-    if (window.innerWidth < 1024) {
-      setIsMobileSidebarOpen(true);
-    }
-  };
+  const handleUnitSelect = useCallback(
+    (unitId) => {
+      selectUnit(unitId);
+      if (window.innerWidth < 1024) setIsMobileSidebarOpen(true);
+    },
+    [selectUnit],
+  );
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-full overflow-hidden bg-slate-50 font-['Jost']">
       <div className="flex-1 relative flex flex-col min-w-0 h-full">
-        {/* Navigation Bar */}
         <div className="z-[1001] bg-white border-b border-slate-200 p-4 shrink-0">
           <div className="flex items-center justify-between gap-4">
             <button
@@ -64,43 +59,29 @@ export default function FloorplanView() {
             >
               <ArrowLeft size={14} /> Back
             </button>
-
             <div className="flex items-center gap-3 lg:gap-6">
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
                 <button
                   onClick={() => setViewMode("map")}
-                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg text-[10px] lg:text-xs font-bold transition-all ${
-                    viewMode === "map"
-                      ? "bg-white text-[#102a43] shadow-sm"
-                      : "text-slate-400"
-                  }`}
+                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg text-[10px] lg:text-xs font-bold transition-all ${viewMode === "map" ? "bg-white text-[#102a43] shadow-sm" : "text-slate-400"}`}
                 >
                   <MapIcon size={14} />{" "}
                   <span className="hidden sm:inline">Map</span>
                 </button>
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg text-[10px] lg:text-xs font-bold transition-all ${
-                    viewMode === "grid"
-                      ? "bg-white text-[#102a43] shadow-sm"
-                      : "text-slate-400"
-                  }`}
+                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg text-[10px] lg:text-xs font-bold transition-all ${viewMode === "grid" ? "bg-white text-[#102a43] shadow-sm" : "text-slate-400"}`}
                 >
                   <LayoutGrid size={14} />{" "}
                   <span className="hidden sm:inline">List</span>
                 </button>
               </div>
-
               {viewMode === "grid" && (
                 <button
                   onClick={() =>
                     setGridTab(gridTab === "all" ? "favorites" : "all")
                   }
-                  className={`p-2.5 rounded-xl flex items-center gap-2 transition-all ${
-                    gridTab === "favorites"
-                      ? "bg-rose-50 text-rose-600"
-                      : "bg-slate-100 text-slate-400"
-                  }`}
+                  className={`p-2.5 rounded-xl flex items-center gap-2 transition-all ${gridTab === "favorites" ? "bg-rose-50 text-rose-600" : "bg-slate-100 text-slate-400"}`}
                 >
                   <Heart
                     size={16}
@@ -114,9 +95,7 @@ export default function FloorplanView() {
             </div>
           </div>
         </div>
-
         {viewMode === "grid" && <UnitFilters />}
-
         <div className="flex-1 relative overflow-hidden flex flex-col min-h-0">
           <div className="flex-1 relative overflow-y-auto no-scrollbar">
             {viewMode === "map" ? (
@@ -134,8 +113,6 @@ export default function FloorplanView() {
               </div>
             )}
           </div>
-
-          {/* Floating Info Button for Mobile/Tablet Map (Manual Trigger) */}
           {viewMode === "map" && activeUnit && (
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
@@ -144,16 +121,10 @@ export default function FloorplanView() {
               <Info size={20} />
             </button>
           )}
-
-          {/* Floor Selection Menu */}
           {viewMode === "map" && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center pointer-events-none w-full px-4">
               <div
-                className={`transition-all duration-300 flex flex-col gap-1 bg-white p-1.5 rounded-2xl shadow-xl border border-slate-200 min-w-[160px] overflow-hidden pointer-events-auto ${
-                  isFloorMenuOpen
-                    ? "opacity-100 translate-y-0 max-h-[40vh] overflow-y-auto mb-3"
-                    : "opacity-0 translate-y-4 max-h-0 mb-0"
-                }`}
+                className={`transition-all duration-300 flex flex-col gap-1 bg-white p-1.5 rounded-2xl shadow-xl border border-slate-200 min-w-[160px] overflow-hidden pointer-events-auto ${isFloorMenuOpen ? "opacity-100 translate-y-0 max-h-[40vh] overflow-y-auto mb-3" : "opacity-0 translate-y-4 max-h-0 mb-0"}`}
               >
                 {floors.map((floor) => (
                   <button
@@ -162,11 +133,7 @@ export default function FloorplanView() {
                       selectFloor(floor.id);
                       setIsFloorMenuOpen(false);
                     }}
-                    className={`px-4 py-2.5 rounded-xl text-left text-sm font-medium ${
-                      activeFloor.id === floor.id
-                        ? "bg-[#102a43] text-white"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
+                    className={`px-4 py-2.5 rounded-xl text-left text-sm font-medium ${activeFloor.id === floor.id ? "bg-[#102a43] text-white" : "text-slate-600 hover:bg-slate-100"}`}
                   >
                     {floor.name}
                   </button>
@@ -186,20 +153,17 @@ export default function FloorplanView() {
           )}
         </div>
       </div>
-
       <Sidebar
         onOpenGallery={() => setIsGalleryOpen(true)}
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}
       />
-
       <VirtualTourEmbed
         isOpen={!!activeTour}
         url={activeTour?.url}
         label={activeTour?.label}
         onClose={() => setActiveTour(null)}
       />
-
       <GalleryModal
         isOpen={isGalleryOpen}
         images={activeUnit?.gallery}

@@ -1,10 +1,10 @@
-// src/context/BuildingContext.jsx
 import React, {
   createContext,
   useContext,
   useState,
   useEffect,
   useMemo,
+  useCallback,
 } from "react";
 
 const BuildingContext = createContext();
@@ -103,52 +103,86 @@ export function BuildingProvider({ children }) {
     });
   }, [allUnits, filters, favorites, gridTab]);
 
-  const selectFloor = (id) => {
-    const floor = floors.find((f) => f.id === id);
-    setActiveFloorId(id);
-    if (floor && floor.units.length > 0) {
-      setActiveUnitId(floor.units[0].id);
-    }
-    setViewMode("map");
-  };
-
-  const handleUnitSelect = (unitId) => {
-    const unitData = allUnits.find((u) => u.id === unitId);
-    if (unitData) {
-      setActiveFloorId(unitData.floorId);
-      setActiveUnitId(unitId);
-    }
-  };
-
-  const value = {
-    data,
-    loading,
-    activeFloor,
-    activeUnit,
-    allUnits,
-    filteredUnits,
-    floors,
-    favorites,
-    gridTab,
-    viewMode,
-    filters,
-    setFilters,
-    setGridTab,
-    setViewMode,
-    selectFloor,
-    selectUnit: handleUnitSelect,
-    toggleFavorite: (id) =>
-      setFavorites((prev) =>
-        prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
-      ),
-    clearFavorites: () => setFavorites([]),
-    goBackToBuilding: () => {
-      setActiveFloorId(null);
-      setActiveUnitId(null);
+  const selectFloor = useCallback(
+    (id) => {
+      setActiveFloorId(id);
+      const floor = floors.find((f) => f.id === id);
+      if (floor && floor.units.length > 0) {
+        setActiveUnitId(floor.units[0].id);
+      }
+      setViewMode("map");
     },
-    activeTour,
-    setActiveTour,
-  };
+    [floors],
+  );
+
+  const handleUnitSelect = useCallback(
+    (unitId) => {
+      const unitData = allUnits.find((u) => u.id === unitId);
+      if (unitData) {
+        setActiveFloorId(unitData.floorId);
+        setActiveUnitId(unitId);
+      }
+    },
+    [allUnits],
+  );
+
+  const toggleFavorite = useCallback((id) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id],
+    );
+  }, []);
+
+  const clearFavorites = useCallback(() => setFavorites([]), []);
+
+  const goBackToBuilding = useCallback(() => {
+    setActiveFloorId(null);
+    setActiveUnitId(null);
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      data,
+      loading,
+      activeFloor,
+      activeUnit,
+      allUnits,
+      filteredUnits,
+      floors,
+      favorites,
+      gridTab,
+      viewMode,
+      filters,
+      setFilters,
+      setGridTab,
+      setViewMode,
+      selectFloor,
+      selectUnit: handleUnitSelect,
+      toggleFavorite,
+      clearFavorites,
+      goBackToBuilding,
+      activeTour,
+      setActiveTour,
+    }),
+    [
+      data,
+      loading,
+      activeFloor,
+      activeUnit,
+      allUnits,
+      filteredUnits,
+      floors,
+      favorites,
+      gridTab,
+      viewMode,
+      filters,
+      selectFloor,
+      handleUnitSelect,
+      toggleFavorite,
+      clearFavorites,
+      goBackToBuilding,
+      activeTour,
+    ],
+  );
 
   return (
     <BuildingContext.Provider value={value}>

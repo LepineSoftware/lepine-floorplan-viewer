@@ -1,4 +1,3 @@
-// src/components/Sidebar.jsx
 import React, { useState, useRef } from "react";
 import {
   Heart,
@@ -24,8 +23,6 @@ import { useBuilding } from "../context/BuildingContext";
 
 export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
   const { activeUnit, favorites, toggleFavorite } = useBuilding();
-
-  // Drag-to-close state for mobile/tablet bottom sheet
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const startY = useRef(0);
@@ -46,25 +43,17 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
     modelSuite: { label: "Model Suite", icon: Sparkles },
   };
 
-  // Touch Handlers for Mobile Dragging
   const handleTouchStart = (e) => {
     startY.current = e.touches[0].clientY;
     setIsDragging(true);
   };
-
   const handleTouchMove = (e) => {
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - startY.current;
-    if (deltaY > 0) {
-      setDragOffset(deltaY);
-    }
+    const deltaY = e.touches[0].clientY - startY.current;
+    if (deltaY > 0) setDragOffset(deltaY);
   };
-
   const handleTouchEnd = () => {
     setIsDragging(false);
-    if (dragOffset > 100) {
-      onClose();
-    }
+    if (dragOffset > 100) onClose();
     setDragOffset(0);
   };
 
@@ -84,11 +73,7 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => toggleFavorite(activeUnit.id)}
-                className={`p-2 rounded-full transition-colors ${
-                  favorites.includes(activeUnit.id)
-                    ? "text-rose-500 bg-rose-50"
-                    : "text-slate-300 hover:bg-slate-50"
-                }`}
+                className={`p-2 rounded-full transition-colors ${favorites.includes(activeUnit.id) ? "text-rose-500 bg-rose-50" : "text-slate-300 hover:bg-slate-50"}`}
               >
                 <Heart
                   size={22}
@@ -105,12 +90,9 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
               </button>
             </div>
           </div>
-
           <div
             onClick={activeUnit.gallery?.length > 0 ? onOpenGallery : undefined}
-            className={`mb-8 relative rounded-2xl overflow-hidden shadow-lg aspect-video ${
-              activeUnit.gallery?.length > 0 ? "cursor-pointer group" : ""
-            }`}
+            className={`mb-8 relative rounded-2xl overflow-hidden shadow-lg aspect-video ${activeUnit.gallery?.length > 0 ? "cursor-pointer group" : ""}`}
           >
             <img
               src={activeUnit.image}
@@ -126,7 +108,6 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
               </div>
             )}
           </div>
-
           <div className="space-y-6 mb-8">
             <div className="flex flex-wrap justify-between gap-4">
               {["sqft", "numOfBeds", "numOfBaths"].map((key) => {
@@ -170,7 +151,6 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
               "{activeUnit.description}"
             </p>
           </div>
-
           <a
             href={activeUnit.pdf}
             target="_blank"
@@ -191,24 +171,15 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
 
   return (
     <>
-      {/* Desktop Sidebar - Transitions in at 1024px */}
       <div className="hidden lg:flex flex-col w-[420px] bg-white border-l border-slate-100 h-full shadow-xl z-20 overflow-hidden">
         <Content />
       </div>
-
-      {/* Mobile/Tablet Bottom Sheet - Active below 1024px */}
       <div
-        className={`lg:hidden fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-          isOpen
-            ? "opacity-100 visible"
-            : "opacity-0 invisible pointer-events-none"
-        }`}
+        className={`lg:hidden fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
         onClick={onClose}
       >
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] max-h-[90vh] flex flex-col transition-transform ${
-            isDragging ? "duration-0" : "duration-500 ease-out"
-          } ${isOpen ? "translate-y-0" : "translate-y-full"}`}
+          className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] max-h-[90vh] flex flex-col transition-transform ${isDragging ? "duration-0" : "duration-500 ease-out"} ${isOpen ? "translate-y-0" : "translate-y-full"}`}
           style={{
             transform: isOpen
               ? `translateY(${dragOffset}px)`
@@ -216,7 +187,6 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Drag Handle Area */}
           <div
             className="w-full py-4 cursor-grab active:cursor-grabbing"
             onTouchStart={handleTouchStart}
@@ -225,7 +195,6 @@ export default function Sidebar({ onOpenGallery, isOpen, onClose }) {
           >
             <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto" />
           </div>
-
           <Content />
         </div>
       </div>

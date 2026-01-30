@@ -1,46 +1,28 @@
-import React from "react";
+import React, { memo } from "react";
 import { Marker } from "react-leaflet";
 import L from "leaflet";
 
 const tourIcon = L.divIcon({
-  html: `
-    <div style="
-      background-color: #102a43;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    ">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-        <circle cx="12" cy="12" r="3"></circle>
-      </svg>
-    </div>
-  `,
+  html: `<div style="background-color: #102a43; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></div>`,
   className: "virtual-tour-marker",
   iconSize: [40, 40],
   iconAnchor: [20, 20],
 });
 
-// src/components/VirtualTourPolygon.jsx
-export default function VirtualTourPolygon({ tour, onSelect }) {
+const VirtualTourPolygon = memo(({ tour, onSelect }) => {
   return (
     <Marker
       position={tour.position}
       icon={tourIcon}
-      // Add a higher zIndexOffset to ensure buttons are above unit polygons
       zIndexOffset={1000}
       eventHandlers={{
         click: (e) => {
           L.DomEvent.stopPropagation(e);
-          console.log("Tour clicked:", tour.label); // Add this to debug
           if (typeof onSelect === "function") onSelect(tour);
         },
       }}
     />
   );
-}
+});
+
+export default VirtualTourPolygon;

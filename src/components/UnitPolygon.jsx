@@ -1,9 +1,9 @@
-import React from "react";
+import React, { memo } from "react";
 import { Polygon, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import { POLYGON_STYLES } from "../config/mapStyles";
 
-export default function UnitPolygon({ unit, isActive, onSelect }) {
+const UnitPolygon = memo(({ unit, isActive, onSelect }) => {
   const currentStyle = isActive
     ? POLYGON_STYLES.active
     : POLYGON_STYLES.inactive;
@@ -26,4 +26,6 @@ export default function UnitPolygon({ unit, isActive, onSelect }) {
       </Tooltip>
     </Polygon>
   );
-}
+});
+
+export default UnitPolygon;

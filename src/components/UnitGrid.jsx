@@ -1,4 +1,3 @@
-// src/components/UnitGrid.jsx
 import React, { memo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
@@ -15,7 +14,6 @@ const attributeIcons = {
   numOfBaths: { label: "Baths", icon: Bath },
 };
 
-// Moved UnitCard outside and wrapped in memo to prevent remounting/jumping
 const UnitCard = memo(
   ({ unit, isActive, isFav, toggleFavorite, onSelectUnit }) => {
     if (!unit) return null;
@@ -29,7 +27,7 @@ const UnitCard = memo(
             : "border-transparent hover:border-slate-200"
         }`}
       >
-        <div className="relative overflow-hidden max-h-[12rem]">
+        <div className="relative overflow-hidden max-h-[300px] aspect-video md:aspect-square lg:aspect-square xl:aspect-video">
           <img
             src={unit.image}
             alt={unit.title}
@@ -37,7 +35,7 @@ const UnitCard = memo(
           />
           <button
             onClick={(e) => {
-              e.preventDefault(); // Essential to stop jumping
+              e.preventDefault();
               e.stopPropagation();
               toggleFavorite(unit.id);
             }}
@@ -105,23 +103,12 @@ export default function UnitGrid({ onSelectUnit }) {
 
   return (
     <div className="w-full">
-      <style>
-        {`
-          .swiper-pagination-bullet-active {
-            background: #102a43 !important;
-          }
-          .swiper-pagination-bullet {
-            opacity: 0.3;
-          }
-          .unit-swiper {
-            padding-bottom: 60px !important;
-            overflow: visible !important;
-          }
-          .unit-swiper .swiper-pagination {
-            bottom: 0px !important;
-          }
-        `}
-      </style>
+      <style>{`
+        .swiper-pagination-bullet-active { background: #102a43 !important; }
+        .swiper-pagination-bullet { opacity: 0.3; }
+        .unit-swiper { padding-bottom: 60px !important; overflow: visible !important; }
+        .unit-swiper .swiper-pagination { bottom: 0px !important; }
+      `}</style>
 
       <div className="block lg:hidden">
         <Swiper
