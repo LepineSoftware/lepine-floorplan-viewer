@@ -149,6 +149,9 @@ export default function FloorplanMap({
         scrollWheelZoom={viewSettings.scrollWheelZoom}
         doubleClickZoom={viewSettings.doubleClickZoom}
         touchZoom={viewSettings.touchZoom}
+        fadeAnimation={false}
+        zoomAnimation={false}
+        markerZoomAnimation={false}
       >
         <ImageOverlay url={config.url} bounds={bounds} />
 

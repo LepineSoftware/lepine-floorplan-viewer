@@ -25,6 +25,9 @@ export default function BuildingMap({ config, floors, onSelect }) {
       scrollWheelZoom={settings.scrollWheelZoom}
       doubleClickZoom={settings.doubleClickZoom}
       touchZoom={settings.touchZoom}
+      fadeAnimation={false}
+      zoomAnimation={false}
+      markerZoomAnimation={false}
     >
       <ImageOverlay url={config.url} bounds={bounds} />
       <MapController

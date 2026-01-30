@@ -21,7 +21,7 @@ export default function MapController({
 
     const handleSizing = () => {
       // Ensure the map container size is updated before calculating zooms
-      map.invalidateSize();
+      map.invalidateSize({ animate: false });
       const container = map.getContainer();
 
       if (config.fitType === "cover") {
@@ -44,7 +44,7 @@ export default function MapController({
         map.fitBounds(bounds, {
           padding: config.padding,
           animate: false,
-          duration: MAP_VIEW_SETTINGS.animationDuration,
+          duration: 0,
         });
 
         const minZoom = map.getBoundsZoom(bounds);

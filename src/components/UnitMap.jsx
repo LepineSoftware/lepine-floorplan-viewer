@@ -60,6 +60,9 @@ export default function UnitMap({
       style={{ background: MAP_VIEW_SETTINGS.defaultBackground }}
       attributionControl={false}
       keyboard={false}
+      fadeAnimation={false}
+      zoomAnimation={false}
+      markerZoomAnimation={false}
       {...settings}
     >
       <ImageOverlay url={config.url} bounds={bounds} />

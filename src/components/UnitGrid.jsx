@@ -124,6 +124,7 @@ export default function UnitGrid({ onSelectUnit }) {
         .unit-swiper .swiper-pagination { bottom: 0px !important; }
       `}</style>
 
+      {/* Mobile Swiper */}
       <div className="block lg:hidden">
         <Swiper
           modules={[Pagination, Navigation]}
@@ -152,17 +153,20 @@ export default function UnitGrid({ onSelectUnit }) {
         </Swiper>
       </div>
 
-      <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5 gap-6 lg:gap-8">
-        {filteredUnits.map((unit) => (
-          <UnitCard
-            key={unit.id}
-            unit={unit}
-            isActive={activeUnit?.id === unit.id}
-            isFav={favorites.includes(unit.id)}
-            toggleFavorite={toggleFavorite}
-            onSelectUnit={onSelectUnit}
-          />
-        ))}
+      {/* Desktop Grid - Responsive columns with max-width constraint */}
+      <div className="hidden lg:block">
+        <div className="grid gap-6 lg:gap-8 grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] max-w-[2400px] mx-auto">
+          {filteredUnits.map((unit) => (
+            <UnitCard
+              key={unit.id}
+              unit={unit}
+              isActive={activeUnit?.id === unit.id}
+              isFav={favorites.includes(unit.id)}
+              toggleFavorite={toggleFavorite}
+              onSelectUnit={onSelectUnit}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
