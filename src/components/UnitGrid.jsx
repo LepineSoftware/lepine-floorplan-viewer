@@ -3,7 +3,7 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import { useBuilding } from "../context/BuildingContext";
-import { Heart, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight, Maximize, Bed, Bath } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
@@ -14,6 +14,12 @@ export default function UnitGrid({ onSelectUnit }) {
   const { filteredUnits, activeUnit, favorites, toggleFavorite } =
     useBuilding();
 
+  const attributeIcons = {
+    sqft: { label: "sqft", icon: Maximize },
+    numOfBeds: { label: "Beds", icon: Bed },
+    numOfBaths: { label: "Baths", icon: Bath },
+  };
+
   const UnitCard = ({ unit }) => {
     if (!unit) return null;
     const isFav = favorites.includes(unit.id);
@@ -22,13 +28,13 @@ export default function UnitGrid({ onSelectUnit }) {
     return (
       <div
         onClick={() => onSelectUnit(unit.id)}
-        className={`group bg-white rounded-3xl overflow-hidden border-2 transition-all cursor-pointer h-full flex flex-col ${
+        className={`group bg-white rounded-2xl overflow-hidden border-2 transition-all cursor-pointer h-full flex flex-col shadow-xl ${
           isActive
-            ? "border-[#102a43] shadow-xl"
-            : "border-transparent hover:border-slate-200 shadow-sm"
+            ? "border-[#102a43]"
+            : "border-transparent hover:border-slate-200"
         }`}
       >
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-video overflow-hidden">
           <img
             src={unit.image}
             alt={unit.title}
@@ -50,40 +56,33 @@ export default function UnitGrid({ onSelectUnit }) {
         </div>
 
         <div className="p-6 flex-1 flex flex-col">
-          <div className="mb-4">
+          <div className="mb-6">
             <h4 className="text-lg font-bold text-slate-900">{unit.title}</h4>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               {unit.model}
             </p>
           </div>
 
-          <div className="flex items-center justify-between gap-2 mb-6">
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-slate-900">
-                {unit.sqft}
-              </span>
-              <span className="text-[8px] font-bold text-slate-400 uppercase">
-                Sqft
-              </span>
-            </div>
-            <div className="w-px h-8 bg-slate-100" />
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-slate-900">
-                {unit.numOfBeds}
-              </span>
-              <span className="text-[8px] font-bold text-slate-400 uppercase">
-                Beds
-              </span>
-            </div>
-            <div className="w-px h-8 bg-slate-100" />
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-slate-900">
-                {unit.numOfBaths}
-              </span>
-              <span className="text-[8px] font-bold text-slate-400 uppercase">
-                Baths
-              </span>
-            </div>
+          {/* Mirrored Sidebar Attribute Layout */}
+          <div className="flex flex-wrap justify-between gap-4 mb-8">
+            {["sqft", "numOfBeds", "numOfBaths"].map((key) => {
+              const Config = attributeIcons[key];
+              return (
+                <div key={key} className="flex items-center gap-2">
+                  <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                    <Config.icon size={16} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900 leading-none">
+                      {unit[key]}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-widest">
+                      {Config.label}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           <button className="mt-auto w-full py-3 rounded-xl bg-slate-50 text-[#102a43] text-xs font-bold group-hover:bg-[#102a43] group-hover:text-white transition-all flex items-center justify-center gap-2">
